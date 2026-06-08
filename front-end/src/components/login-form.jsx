@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { User } from 'lucide-react';
 import SubmitButton from "./submitButton";
+import { useNavigate } from "react-router-dom";
 
 // Vertex shader source code
 const vertexSmokeySource = `
@@ -205,10 +206,31 @@ export function SmokeyBackground(
 export function LoginForm() {
   const [name , setName] = useState("")
 
+  const navigate = useNavigate();
+
   const applyChange = (event) => {
     setName(event.target.value)
   }
 
+  const submitCheck = async (e) => {
+      if(e.key === "Enter"){
+
+        const resp = await fetch("http://localhost:80/api/v1/login", {
+          method: "POST",
+          credentials: "include",//accept cookies
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({name:name})
+        })
+        console.log(resp)
+        console.log(resp.ok)
+        
+        if (resp.ok){
+          navigate("/chat")
+        }
+      }
+  }
 
   return (
     <div
@@ -225,6 +247,7 @@ export function LoginForm() {
             className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
             placeholder=""
             onChange={applyChange}
+            onKeyDown={submitCheck}
             required />
           <label
             htmlFor="floating_email"

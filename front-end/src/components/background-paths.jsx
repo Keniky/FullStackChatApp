@@ -3,6 +3,9 @@
 import { motion } from "framer-motion";
 import { Button } from "./button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { RoomIdContext } from "@/context/roomIdContext";
 
 function FloatingPaths({
     position
@@ -52,13 +55,13 @@ function FloatingPaths({
     );
 }
 
-export function BackgroundPaths({
-    title = "Background Paths"
-}) {
+export function BackgroundPaths( {title = "Background Paths"} ) {
+
     const words = title.split(" ");
     
+    const navigate = useNavigate()
     const [showInput, setShowInput] = useState(false);
-    const [roomId , setRoomId] = useState("")
+    const {roomId , setRoomId} = useContext(RoomIdContext)
 
     const expand = () => {
         if(showInput){
@@ -71,12 +74,22 @@ export function BackgroundPaths({
         setRoomId(event.target.value)
     }
     
-    const createRoom = () => {
-        console.log("room created")
+    const createRoom = async () => {
+        fetch("http://localhost:80/api/v1/room",{
+            credentials: "include",
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            console.log(data)
+            setRoomId(data.room_id)
+            navigate("/chat/room")
+        });
     }
 
     const joinRoom = () => {
-        console.log("joined room" , roomId)
+        if (roomId != ""){
+            navigate("/chat/room")
+        }
     }
 
 

@@ -13,10 +13,24 @@ func main() {
 	//if request is to website return the files
 	mux.HandleFunc("/", handlers.Spa)
 	//if request is to the api to send
+
+	//api to log in and create new user
 	mux.HandleFunc("/api/v1/login", handlers.LogIn)
+
+	//handler to make sure user is logged in
 	mux.HandleFunc("/api/v1/auth", handlers.Auth)
+
+	//handler to return user data GET
 	mux.HandleFunc("/api/v1/user", handlers.UserData)
-	mux.HandleFunc("/api/v1/room", handlers.UserData)
+
+	//handler to create new room and return room id
+	mux.HandleFunc("/api/v1/room", handlers.RoomHandlerCreate)
+
+	//handler to join a room
+	mux.HandleFunc("/api/v1/chat", handlers.JoinRoom)
+	//chat users GET METHOD
+	mux.HandleFunc("/api/v1/chat/users", handlers.GetUsers)
+
 	http.ListenAndServe(":80", corsMiddleware(mux))
 
 }
