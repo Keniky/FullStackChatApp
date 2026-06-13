@@ -5,7 +5,7 @@ import { Button } from "./button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { RoomIdContext } from "@/context/roomIdContext";
+import { RoomContext } from "@/context/roomContext";
 
 function FloatingPaths({
     position
@@ -61,7 +61,7 @@ export function BackgroundPaths( {title = "Background Paths"} ) {
     
     const navigate = useNavigate()
     const [showInput, setShowInput] = useState(false);
-    const {roomId , setRoomId} = useContext(RoomIdContext)
+    const {roomId , setRoomId} = useContext(RoomContext)
 
     const expand = () => {
         if(showInput){

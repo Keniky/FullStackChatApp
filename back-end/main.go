@@ -24,12 +24,12 @@ func main() {
 	mux.HandleFunc("/api/v1/user", handlers.UserData)
 
 	//handler to create new room and return room id
-	mux.HandleFunc("/api/v1/room", handlers.RoomHandlerCreate)
+	mux.HandleFunc("/api/v1/room", handlers.CreateRoom)
 
 	//handler to join a room
 	mux.HandleFunc("/api/v1/chat", handlers.JoinRoom)
 	//chat users GET METHOD
-	mux.HandleFunc("/api/v1/chat/users", handlers.GetUsers)
+	mux.HandleFunc("/api/v1/chat/members", handlers.GetUsers)
 
 	http.ListenAndServe(":80", corsMiddleware(mux))
 

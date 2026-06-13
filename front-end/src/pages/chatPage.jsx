@@ -1,12 +1,13 @@
 import { BackgroundPaths } from "@/components/background-paths"
+import { RoomContext } from "@/context/roomContext"
+import { useContext } from "react"
 import { useEffect } from "react"
 import { useState } from "react"
 
 export default function ChatPage(){
     //get user data you must be logged in lol else idk man
     const [mode , setMode] = useState("dark")
-    
-    const [name , setName] = useState("Loading...")
+    const {name , setName} = useContext(RoomContext)    
 
     useEffect(() => {
         fetch("http://localhost:80/api/v1/user" , {
@@ -17,7 +18,6 @@ export default function ChatPage(){
         .then(data => { 
             if (data.name != null || data.name != undefined){
                 setName(data.name)
-                console.log("user name is " + data.name)
                 setMode("dark")
             } 
             

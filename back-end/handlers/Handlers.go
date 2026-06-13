@@ -70,7 +70,7 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func RoomHandlerCreate(w http.ResponseWriter, r *http.Request) {
+func CreateRoom(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("user who should be authentificated is requesting to create a room ")
 	var currentRoom *repository.Room = repository.CreateRoom()
 	var currentRoomId string = strconv.FormatInt(currentRoom.Id, 10)
@@ -186,8 +186,10 @@ func JoinRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	defer socket.Close()
 	user.Socket = socket
 	user.URoom = currentRoom
+	//add new user
 	currentRoom.Join <- user
 
 	//when user disconnects just kick him out of the room lol
@@ -202,6 +204,22 @@ func JoinRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
+
+	cookie, err := r.Cookie("session_id")
+
+	if err != nil {
+		fmt.Println("no cookie user failed to join room")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	user, ok := sessions[cookie.Value]
+
+	if !ok {
+		fmt.Println("user not available fake cookie")
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
 
 	//no need to authentify
 	//now get the room id from user
@@ -223,8 +241,25 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//transform it into a websocket connection
+	socket, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		//bad kills system
+		// log.Fatal("while serving http : ", err)
+		log.Println("while serving http : ", err)
+		return
+	}
+
+	//when user disconnects just kick him out of the room lol
+	defer socket.Close()
+	//let user check his email and write messages in his window
+
+	//give user his new socket
+	user.MemberSocket = socket
+
+	go user.RunMemberDetector()
 	//if there is room
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(currentRoom.UsersToJSON())
+	currentRoom.AlertUsers()
+	// socket.WriteMessage(websocket.TextMessage, currentRoom.UsersToJSON())
 
 }

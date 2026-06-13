@@ -213,24 +213,21 @@ export function LoginForm() {
   }
 
   const submitCheck = async (e) => {
-      if(e.key === "Enter"){
+      if(e.key == "Enter"){
 
         const resp = await fetch("http://localhost:80/api/v1/login", {
-          method: "POST",
-          credentials: "include",//accept cookies
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({name:name})
+            method: "POST",
+            credentials: "include",//accept cookies
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({name:name})
         })
-        console.log(resp)
-        console.log(resp.ok)
         
         if (resp.ok){
-          navigate("/chat")
+            navigate("/chat")
         }
-      }
-  }
+  }}
 
   return (
     <div

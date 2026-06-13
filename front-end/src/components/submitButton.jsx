@@ -13,8 +13,6 @@ export default function SubmitButton({name}){
             },
             body: JSON.stringify({name:name})
         })
-        console.log(resp)
-        console.log(resp.ok)
         
         if (resp.ok){
             navigate("/chat")
