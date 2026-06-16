@@ -212,10 +212,10 @@ export function LoginForm() {
     setName(event.target.value)
   }
 
-  const submitCheck = async (e) => {
-      if(e.key == "Enter"){
+  const submit = async (e) => {
+  
 
-        const resp = await fetch("http://localhost:80/api/v1/login", {
+        const resp = await fetch("http://localhost:80/api/v2/login", {
             method: "POST",
             credentials: "include",//accept cookies
             headers: {
@@ -227,31 +227,38 @@ export function LoginForm() {
         if (resp.ok){
             navigate("/chat")
         }
-  }}
+  }
 
   return (
     <div
       className="w-full max-w-sm p-8 space-y-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-2xl">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-        <p className="mt-2 text-sm text-gray-300">Sign in to continue</p>
+        <p className="mt-2 text-sm text-gray-300">Log in to continue</p>
       </div>
         {/* Email Input with Animated Label */}
-        <div className="relative z-0">
-          <input
-            type="text"
-            id="floating_email"
-            className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
-            placeholder=""
-            onChange={applyChange}
-            onKeyDown={submitCheck}
-            required />
-          <label
-            htmlFor="floating_email"
-            className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-            <User className="inline-block mr-2 -mt-1" size={16} />
-            Your Name
-          </label>
+        <form method="POST" onSubmit={submit}>
+          <div className="relative z-0">
+            <input
+              type="text"
+              id="floating_email"
+              className="block pb-5 pt-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
+              placeholder=""
+              onChange={applyChange}
+              required />
+
+            <label
+              htmlFor="floating_email"
+              className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+              <User className="inline-block mr-2 -mt-1" size={16} />
+              Your Name
+            </label>
+
+            <SubmitButton name = {name}/>        
+          </div>
+        </form>
+        <div className="flex items-center justify-between">
+          <a href="/signin" className="text-xs text-gray-300 hover:text-white transition">Sign In</a>
         </div>
         {/* Password Input with Animated Label */}
         {/* <div className="relative z-0">
@@ -273,7 +280,6 @@ export function LoginForm() {
           <a href="#" className="text-xs text-gray-300 hover:text-white transition">Forgot Password?</a>
         </div> */}
 
-        <SubmitButton name = {name}/>        
 
         {/* Divider */}
         {/* <div className="relative flex py-2 items-center">

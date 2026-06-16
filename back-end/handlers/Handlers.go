@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"chatApp/repository"
+	"chatApp/services"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -100,7 +101,8 @@ func UserData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"name":"` + user.Name + `"}`))
+	//now it returns userName and pfp
+	w.Write([]byte(`{"name":"` + user.Name + `" , "pfp": "` + user.Pfp + `"}`))
 	fmt.Println("user has recieved his user name ", user.Name)
 }
 
@@ -261,5 +263,75 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	//if there is room
 	currentRoom.AlertUsers()
 	// socket.WriteMessage(websocket.TextMessage, currentRoom.UsersToJSON())
+
+}
+
+func NewSignIn(w http.ResponseWriter, r *http.Request) {
+
+	//translate what you recieved in the form
+	err := r.ParseMultipartForm(10 << 20)
+
+	if err != nil {
+		fmt.Println("[NewSignIn]failed to load the file and user name")
+		w.WriteHeader(http.StatusPreconditionFailed)
+		return
+	}
+	name := r.FormValue("name")
+	file, _, err := r.FormFile("image")
+
+	if err != nil {
+		fmt.Println("[NewSignIn]failed to load the file ")
+		w.WriteHeader(http.StatusPreconditionFailed)
+		return
+	}
+	defer file.Close()
+
+	res := services.SignInNewUser(name, &file)
+	if res == false {
+		fmt.Println("[NewSignIn]user already exists (i hope this is the error)")
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
+	fmt.Println("[NewSignIn]user signed in sccessfully")
+	w.WriteHeader(http.StatusOK)
+}
+
+func NewLogIn(w http.ResponseWriter, r *http.Request) {
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return
+	}
+	var jsonBody map[string]string
+	json.Unmarshal(body, &jsonBody)
+
+	newUser := repository.CreateUser()
+	//get username
+	userData := services.VerifyIfUserIsSignedUp(jsonBody["name"])
+	if userData == nil {
+		fmt.Println("[NewLogIn] user doesn't exist ")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	newUser.Name = userData.Name
+	newUser.Pfp = userData.Pfp
+
+	//create session and add user in the session
+	session_id := repository.CreateSession()
+	sessions[session_id] = newUser
+
+	fmt.Println("new user has been added ", newUser.Name)
+
+	//we got the name
+	//cookie works evreywhere
+	cookie := &http.Cookie{
+		Name:  "session_id",
+		Value: session_id,
+		Path:  "/",
+	}
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("ok"))
 
 }

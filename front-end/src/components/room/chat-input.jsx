@@ -5,7 +5,7 @@ import { useContext } from "react";
 export function ChatInput({messagesWebSocket}){
 
     const [message , setMessage] = useState('');
-    const {name } = useContext(RoomContext)
+    const {name , pfp} = useContext(RoomContext)
 
     const registerInput = (event) => {
         setMessage(event.target.value);
@@ -18,7 +18,7 @@ export function ChatInput({messagesWebSocket}){
     const sendMessage = () => {
         //sendMessage
         //replace this with send message to server
-        messagesWebSocket.current.send(JSON.stringify({message:message , name:name})) 
+        messagesWebSocket.current.send(JSON.stringify({message:message , name:name , pfp:pfp})) 
         setMessage('')
     }
     

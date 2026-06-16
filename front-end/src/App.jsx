@@ -1,13 +1,14 @@
 import './App.css'
 import ChatPage from './pages/chatPage';
 import LoginPage from './pages/loginPage'
-// import Auth from './components/Auth'
+import Auth from './components/Auth'
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useState } from 'react';
 import { RoomContext } from './context/roomContext';
 import RoomPage from './pages/chatRoomPage';
 import ChatRoomPage from './pages/chatRoomPage';
+import SignInPage from './pages/signInPage';
 
 //before displaying anything get cookie and ask server if it is valid 
 //if cookie is valid redirect to chat
@@ -16,10 +17,11 @@ import ChatRoomPage from './pages/chatRoomPage';
 
 const router = createBrowserRouter([
   {path: "/", element: <LoginPage/>},
+  {path: "/signin" , element:<SignInPage/>},
 
   {
     //check if i can go to that page
-      // element: <Auth/>,
+      element: <Auth/>,
       errorElement: [
       <ChatPage/>,
       <RoomPage/>
@@ -38,9 +40,10 @@ const router = createBrowserRouter([
 function App() {
   const [roomId , setRoomId ] = useState("")
   const [name , setName] = useState("guest")
+  const [pfp , setPfp] = useState("")
 
   return (
-    <RoomContext.Provider value = {{ roomId , setRoomId , name , setName}}>
+    <RoomContext.Provider value = {{ roomId , setRoomId , name , setName,pfp , setPfp}}>
       <RouterProvider router={router}/>
     </RoomContext.Provider>
   )

@@ -1,15 +1,22 @@
 package main
 
 import (
+	"chatApp/database"
 	"chatApp/handlers"
 	"net/http"
+
+	_ "github.com/lib/pq"
 )
 
 // go: embed static/app
 
 func main() {
+	conn := database.GetDBConnection()
+	defer conn.Close()
 
 	mux := http.NewServeMux()
+	//serve static files directly
+	mux.Handle("/static/app/", http.StripPrefix("/static/app/", http.FileServer(http.Dir("./static/app"))))
 	//if request is to website return the files
 	mux.HandleFunc("/", handlers.Spa)
 	//if request is to the api to send
@@ -30,6 +37,11 @@ func main() {
 	mux.HandleFunc("/api/v1/chat", handlers.JoinRoom)
 	//chat users GET METHOD
 	mux.HandleFunc("/api/v1/chat/members", handlers.GetUsers)
+
+	//new SignIn api
+	mux.HandleFunc("POST /api/v2/signin", handlers.NewSignIn)
+	//new LogIn api
+	mux.HandleFunc("POST /api/v2/login", handlers.NewLogIn)
 
 	http.ListenAndServe(":80", corsMiddleware(mux))
 

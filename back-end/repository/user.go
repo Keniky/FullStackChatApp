@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"chatApp/database"
 	"fmt"
 	"math"
 	"math/rand/v2"
@@ -28,6 +29,79 @@ func CreateUser() *User {
 		Recieve:   make(chan []byte),
 		NewMember: make(chan bool),
 	}
+}
+
+// store user in the database
+func SaveUserInDB(name, url string) bool {
+	conn := database.GetDBConnection()
+
+	transaction, err := conn.Begin()
+
+	if err != nil {
+		return false
+	}
+
+	var id int
+	err = transaction.QueryRow(
+		"INSERT INTO profiles(profile_url) VALUES($1) RETURNING profile_id",
+		url,
+	).Scan(&id)
+
+	if err != nil {
+		fmt.Println("failed to insert new profile")
+		return false
+	}
+
+	//now insert user it self
+
+	_, err = transaction.Exec(
+		"INSERT INTO users(user_name , profile_id) VALUES($1, $2)",
+		name,
+		id,
+	)
+
+	if err != nil {
+		fmt.Println("failed to insert new user")
+		return false
+	}
+	transaction.Commit()
+
+	return true
+}
+
+type UserNameAndPfp struct {
+	Name string
+	Pfp  string
+}
+
+func VerifyIfUserIsSignedUp(name string) (userData *UserNameAndPfp) {
+	conn := database.GetDBConnection()
+	rows, err := conn.Query("SELECT users.user_name, profiles.profile_url "+
+		"FROM users "+
+		"JOIN profiles ON users.profile_id = profiles.profile_id "+
+		"WHERE users.user_name = $1 ",
+		name,
+	)
+	if err != nil {
+		fmt.Println("failed to retrieve data from database")
+		return nil
+	}
+
+	defer rows.Close()
+
+	if rows.Next() {
+		var temp UserNameAndPfp
+		err = rows.Scan(&temp.Name, &temp.Pfp)
+		if err != nil {
+			fmt.Println("error while reading data for user")
+			return nil
+		}
+		return &temp
+
+	} else {
+		return nil
+	}
+
 }
 
 func (u *User) Read() {

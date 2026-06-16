@@ -25,7 +25,11 @@ export function MainChatArea(){
 
         messagesWebSocket.current.onmessage = (msg) => {
             const data = JSON.parse(msg.data);
-            setChatMessages(prev => [...prev , {message:data.message , name:data.name , key:crypto.randomUUID()}])
+            setChatMessages(prev => [...prev , {
+                                                message:data.message,
+                                                name:data.name,
+                                                pfp:data.pfp,
+                                                key:crypto.randomUUID()}])
         } 
 
     }, [])

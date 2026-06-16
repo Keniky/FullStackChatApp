@@ -1,5 +1,6 @@
 "use client";
 
+import temp from "./../assets/hero.png"
 import { motion } from "framer-motion";
 import { Button } from "./button";
 import { useState } from "react";
@@ -57,7 +58,7 @@ function FloatingPaths({
 
 export function BackgroundPaths( {title = "Background Paths"} ) {
 
-    const words = title.split(" ");
+    const words = title.split("");
     
     const navigate = useNavigate()
     const [showInput, setShowInput] = useState(false);
@@ -107,7 +108,7 @@ export function BackgroundPaths( {title = "Background Paths"} ) {
                     transition={{ duration: 2 }}
                     className="max-w-4xl mx-auto">
                     <h1
-                        className="text-5xl sm:text-7xl md:text-8xl font-bold mb-8 tracking-tighter">
+                        className="text-5xl sm:text-7xl md:text-8xl font-bold mb-8 ">
                         {words.map((word, wordIndex) => (
                             <span key={wordIndex} className="inline-block mr-4 last:mr-0">
                                 {word.split("").map((letter, letterIndex) => (
@@ -126,7 +127,7 @@ export function BackgroundPaths( {title = "Background Paths"} ) {
                                         className="inline-block text-transparent bg-clip-text 
                                         bg-gradient-to-r from-neutral-900 to-neutral-700/80 
                                         dark:from-white dark:to-white/80">
-                                        {letter}
+                                        {letter} 
                                     </motion.span>
                                 ))}
                             </span>
