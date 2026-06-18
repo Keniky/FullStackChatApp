@@ -103,7 +103,7 @@ func UserData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	//now it returns userName and pfp
 	w.Write([]byte(`{"name":"` + user.Name + `" , "pfp": "` + user.Pfp + `"}`))
-	fmt.Println("user has recieved his user name ", user.Name)
+	fmt.Println("user has recieved his user name ", user.Name, " and user picture ", user.Pfp)
 }
 
 // create user
@@ -321,7 +321,7 @@ func NewLogIn(w http.ResponseWriter, r *http.Request) {
 	session_id := repository.CreateSession()
 	sessions[session_id] = newUser
 
-	fmt.Println("new user has been added ", newUser.Name)
+	fmt.Println("new user has been added ", newUser.Name, " user pfp is ", newUser.Pfp)
 
 	//we got the name
 	//cookie works evreywhere

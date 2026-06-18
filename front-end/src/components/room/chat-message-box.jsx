@@ -9,7 +9,7 @@ export function ChatMessageBox({message , senderName, senderPfp}){
     return (
         <div className={`flex flex-1 ${senderName == name ? "flex-row-reverse" : "flex-row"}  items-center  m-[1rem]  `}> 
             <div className="h-90 w-90 border border-black rounded-full border-solid">
-                <img src={senderPfp} alt="./static/app/public/a.png" ></img>
+                <img src={'/' + senderPfp} onError={(e) => {e.currentTarget.src = "/favicon.png"}} className="h-20 w-20 rounded-full "></img>
             </div>
             <div className="flex flex-col px-[2rem] max-w-[30rem]">
                 <section className="flex flex-row items-center gap-[1rem] flex justify-between pl-[10px] ">

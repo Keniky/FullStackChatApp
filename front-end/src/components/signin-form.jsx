@@ -232,7 +232,7 @@ export function SignInForm() {
 
     //try to log in 
     //send name and tell server if you found it get the account bruh and give me a cookie to use
-    const resp = await fetch("http://localhost:80/api/v1/login", {
+    const resp = await fetch("http://localhost:80/api/v2/login", {
         method: "POST",
         credentials: "include",//accept cookies
         headers: {
@@ -285,7 +285,7 @@ export function SignInForm() {
             </label>
 
             <button
-              type="button"
+              type="submit"
               className="group w-full flex items-center justify-center py-3 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-all duration-300">
               Sign In
               <ArrowLeft className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />

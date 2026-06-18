@@ -16,7 +16,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	//serve static files directly
-	mux.Handle("/static/app/", http.StripPrefix("/static/app/", http.FileServer(http.Dir("./static/app"))))
+	// mux.Handle("/static/app/", http.StripPrefix("/static/app/", http.FileServer(http.Dir("./static/app"))))
 	//if request is to website return the files
 	mux.HandleFunc("/", handlers.Spa)
 	//if request is to the api to send

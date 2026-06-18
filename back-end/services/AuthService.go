@@ -24,7 +24,7 @@ func SignInNewUser(name string, file *multipart.File) (res bool) {
 	//send username and file name
 	//get file name and add to it /public/
 	// repository.SaveUserInDB(name, "/public/"+filepath.Base(newFile.Name()))
-	repository.SaveUserInDB(name, "/static/app/"+filepath.Base(newFile.Name()))
+	repository.SaveUserInDB(name, filepath.Base(newFile.Name()))
 
 	res = true
 	return res

@@ -254,7 +254,7 @@ export function LoginForm() {
               Your Name
             </label>
 
-            <SubmitButton name = {name}/>        
+            <SubmitButton  name = {name}/>        
           </div>
         </form>
         <div className="flex items-center justify-between">

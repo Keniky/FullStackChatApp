@@ -9,21 +9,22 @@ export default function ChatPage(){
     const [mode , setMode] = useState("dark")
     const {name , setName , pfp ,setPfp} = useContext(RoomContext)    
 
-    console.log("place: chatPage"+pfp)
+    console.log(pfp)
     useEffect(() => {
+        console.log("test of fetching in ChatPage")
         fetch("http://localhost:80/api/v1/user" , {
             method: "GET",
             credentials: "include"
         })
         .then(resp => resp.json())
         .then(data => { 
+            console.log("recieved data" , data)
             if (data.name != null || data.name != undefined){
                 setName(data.name)
                 setMode("dark")
             } 
             if (data.pfp !=null || data.pfp != undefined ){
                setPfp(data.pfp)
-                console.log("profile pic" + data.pfp)
             }
             
         })//check it not null
